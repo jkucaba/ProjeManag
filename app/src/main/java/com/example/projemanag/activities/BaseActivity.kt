@@ -39,7 +39,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun getCurrentUserID() : String {
-        return FirebaseAuth.getInstance().currentUser!!.uid.toString()
+        return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
     fun doubleBackToExit() {
