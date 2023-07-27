@@ -1,8 +1,10 @@
 package com.example.projemanag
 
+import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.WindowManager
 import com.example.projemanag.databinding.ActivitySplashBinding
 
@@ -22,5 +24,11 @@ class SplashActivity : AppCompatActivity() {
 
         val typeFace : Typeface = Typeface.createFromAsset(assets, "good times rg.otf")
         binding?.tvAppName?.typeface = typeFace
+
+        //Moving from one activity to another
+        Handler().postDelayed({
+            startActivity(Intent(this, IntroActivity::class.java))
+            finish()
+        }, 2500)
     }
 }
