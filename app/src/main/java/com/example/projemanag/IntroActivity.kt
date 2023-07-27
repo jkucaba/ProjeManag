@@ -1,5 +1,6 @@
 package com.example.projemanag
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
@@ -17,5 +18,9 @@ class IntroActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+
+        binding?.btnSignUpIntro?.setOnClickListener {
+            startActivity(Intent(this, SignUpActivity::class.java))
+        }
     }
 }
