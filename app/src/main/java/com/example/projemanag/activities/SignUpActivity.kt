@@ -7,6 +7,8 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.example.projemanag.R
 import com.example.projemanag.databinding.ActivitySignUpBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class SignUpActivity : BaseActivity() {
     private var binding : ActivitySignUpBinding? = null
@@ -48,11 +50,29 @@ class SignUpActivity : BaseActivity() {
         val password : String = binding?.etPassword?.text.toString().trim{it <= ' '}  // if you have empty space in password, it will be trimmed and not work!!
 
         if(validateForm(name, email, password)){
-            Toast.makeText(
-                this@SignUpActivity,
-                "Now we can register a user",
-                Toast.LENGTH_SHORT
-            ).show()
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    hideProgressDialog()
+                    if (task.isSuccessful) {
+                        val firebaseUser: FirebaseUser = task.result!!.user!!
+                        val registeredEmail = firebaseUser.email!!
+                        Toast.makeText(
+                            this,
+                            "$name you have been registered with $registeredEmail",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        FirebaseAuth.getInstance()
+                            .signOut()  //just for now (we dont do anything with the user)
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            task.exception!!.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
         }
 
     }
