@@ -1,6 +1,8 @@
 package com.example.projemanag.firebase
 
+import android.app.Activity
 import android.util.Log
+import com.example.projemanag.activities.MainActivity
 import com.example.projemanag.activities.SignInActivity
 import com.example.projemanag.activities.SignUpActivity
 import com.example.projemanag.models.User
@@ -24,17 +26,33 @@ class FirestoreClass {
             }
     }
 
-    fun signInUser(activity: SignInActivity){
+    fun signInUser(activity: Activity){
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
             .addOnSuccessListener {document ->
                val loggedInUser = document.toObject(User::class.java)
                 if(loggedInUser!= null){
-                    activity.signInSuccess(loggedInUser)
+
+                    when(activity){
+                        is SignInActivity -> {
+                            activity.signInSuccess(loggedInUser)
+                        }
+                        is MainActivity -> {
+                            activity.updateNavigationUserDetails(loggedInUser)
+                        }
+                    }
                 }
             }.addOnFailureListener {
                     e ->
+                when(activity){
+                    is SignInActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is MainActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
                 Log.e("SignInUser", "Error adding document", e)
             }
     }

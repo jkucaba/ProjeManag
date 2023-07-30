@@ -4,10 +4,15 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import com.bumptech.glide.Glide
 import com.example.projemanag.R
 import com.example.projemanag.databinding.ActivityMainBinding
+import com.example.projemanag.firebase.FirestoreClass
+import com.example.projemanag.models.User
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
@@ -22,6 +27,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
+
+        FirestoreClass().signInUser(this)
 
     }
 
@@ -52,6 +59,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } else {
             doubleBackToExit()
         }
+    }
+
+    fun updateNavigationUserDetails(user : User) {
+        Glide
+            .with(this)
+            .load(user.image)
+            .centerCrop()
+            .placeholder(R.drawable.ic_user_place_holder)
+            .into(findViewById(R.id.iv_user_image))
+
+        findViewById<TextView>(R.id.tv_username).text = user.name
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
