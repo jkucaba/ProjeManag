@@ -2,8 +2,11 @@ package com.example.projemanag.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import com.example.projemanag.R
 import com.example.projemanag.databinding.ActivityMyProfileBinding
+import com.example.projemanag.firebase.FirestoreClass
+import com.example.projemanag.models.User
 
 class MyProfileActivity : BaseActivity() {
 
@@ -14,6 +17,8 @@ class MyProfileActivity : BaseActivity() {
         setContentView(binding?.root)
 
         setupActionBar()
+
+        FirestoreClass().loadUserData(this)
     }
 
     private fun setupActionBar() {
@@ -27,6 +32,21 @@ class MyProfileActivity : BaseActivity() {
         }
         binding?.toolbarMyProfileActivity?.setNavigationOnClickListener {
             onBackPressed()
+        }
+    }
+
+    fun setUserDataInUI(user : User){
+        Glide
+            .with(this@MyProfileActivity)
+            .load(user.image)
+            .centerCrop()
+            .placeholder(R.drawable.ic_user_place_holder)
+            .into(findViewById(R.id.iv_user_image_profile))
+
+        binding?.etName?.setText(user.name)
+        binding?.etEmail?.setText(user.email)
+        if(user.mobile != 0L){
+            binding?.etMobile?.setText(user.mobile.toString())
         }
     }
 }
