@@ -8,6 +8,8 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -16,6 +18,8 @@ import com.example.projemanag.R
 import com.example.projemanag.databinding.ActivityMyProfileBinding
 import com.example.projemanag.firebase.FirestoreClass
 import com.example.projemanag.models.User
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.IOException
 
 class MyProfileActivity : BaseActivity() {
@@ -26,6 +30,7 @@ class MyProfileActivity : BaseActivity() {
     }
 
     private var mSelectedImageFileUri: Uri? = null
+    private var mProfileImageURL : String = ""
 
     var binding : ActivityMyProfileBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +51,12 @@ class MyProfileActivity : BaseActivity() {
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     READ_STORAGE_PERMISSION_CODE
                 )
+            }
+        }
+
+        binding?.btnUpdate?.setOnClickListener{
+            if(mSelectedImageFileUri != null){
+                uploadUserImage()
             }
         }
     }
@@ -119,5 +130,50 @@ class MyProfileActivity : BaseActivity() {
         if(user.mobile != 0L){
             binding?.etMobile?.setText(user.mobile.toString())
         }
+    }
+
+    private fun uploadUserImage(){
+        showProgressDialog(resources.getString(R.string.please_wait))
+
+        if(mSelectedImageFileUri != null){
+            val sRef : StorageReference =
+                FirebaseStorage.getInstance().reference
+                    .child("USER_IMAGE"
+                            + System.currentTimeMillis()
+                            + "." + getFileExtension(mSelectedImageFileUri))
+
+            sRef.putFile(mSelectedImageFileUri!!).addOnSuccessListener {
+                taskSnapshot ->
+                Log.i(
+                    "Firebase Storage URL",
+                    taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                )
+
+                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                    uri ->
+                    Log.e(
+                        "Downloadable Image URL",
+                        uri.toString()
+                    )
+                    mProfileImageURL = uri.toString()
+
+                    hideProgressDialog()
+                    //TODO update profile
+                }
+            }.addOnFailureListener {
+                    exception ->
+                Toast.makeText(
+                    this@MyProfileActivity,
+                    exception.message,
+                    Toast.LENGTH_LONG
+                ).show()
+
+                hideProgressDialog()
+            }
+        }
+    }
+
+    private fun getFileExtension(uri : Uri?): String?{
+        return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri!!))
     }
 }
