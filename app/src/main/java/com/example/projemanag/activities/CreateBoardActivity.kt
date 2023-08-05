@@ -16,15 +16,21 @@ import com.example.projemanag.databinding.ActivityCreateBoardBinding
 import com.example.projemanag.utils.Constants
 import java.io.IOException
 
-class CreateBoardActivity : AppCompatActivity() {
+class CreateBoardActivity : BaseActivity() {
     private var binding : ActivityCreateBoardBinding? = null
     private var mSelectedImageFileUri : Uri? = null
+
+    private lateinit var mUserName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateBoardBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         setupActionBar()
+
+        if(intent.hasExtra(Constants.NAME)){
+            mUserName = intent.getStringExtra(Constants.NAME)!!
+        }
 
         binding?.ivBoardImage?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
@@ -41,6 +47,11 @@ class CreateBoardActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    fun boardCreatedSuccessfully(){
+        hideProgressDialog()
+        finish()
     }
 
     private fun setupActionBar() {
