@@ -26,7 +26,7 @@ class FirestoreClass {
             }
     }
 
-    fun createBoardUser(activity : CreateBoardActivity, board : Board){
+    fun createBoard(activity : CreateBoardActivity, board : Board){
         mFirestore.collection(Constants.BOARDS)
             .document()
             .set(board, SetOptions.merge())
