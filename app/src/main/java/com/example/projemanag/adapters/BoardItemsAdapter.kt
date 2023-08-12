@@ -14,7 +14,7 @@ open class BoardItemsAdapter(private val context: Context,
                              private var list : ArrayList<Board>):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    private var onClickListenervar: onClickListener? = null
+    private var onClickListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(
@@ -43,15 +43,19 @@ open class BoardItemsAdapter(private val context: Context,
             holder.itemView.findViewById<TextView>(R.id.tv_created_by).text = "Created by: ${model.createdBy}"
 
             holder.itemView.setOnClickListener {
-                if(onClickListenervar != null){
-                    onClickListenervar!!.onClick(position, model)
+                if(onClickListener != null){
+                    onClickListener!!.onClick(position, model)
                 }
             }
         }
     }
 
-    interface onClickListener{
+    interface OnClickListener {
         fun onClick(position: Int, model: Board)
+    }
+
+    fun setOnClickListener(onClickListener: OnClickListener){
+        this.onClickListener = onClickListener
     }
 
     private class MyViewHolder(view : View) : RecyclerView.ViewHolder(view){
