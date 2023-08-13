@@ -10,6 +10,7 @@ import com.example.projemanag.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.toObject
 
 class FirestoreClass {
     private val mFirestore = FirebaseFirestore.getInstance()
@@ -23,6 +24,23 @@ class FirestoreClass {
             }.addOnFailureListener {
                 e ->
                 Log.e(activity.javaClass.simpleName, "Error adding document", e)
+            }
+    }
+
+    fun getBoardDetails(activity: TaskListActivity, documentId : String){
+        mFirestore.collection(Constants.BOARDS)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.i(activity.javaClass.simpleName, document.toString())
+
+                activity.boardDetails(document.toObject(Board::class.java)!!)
+
+            }.addOnFailureListener {
+                    e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
             }
     }
 
