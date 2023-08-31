@@ -5,8 +5,10 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projemanag.R
 import com.example.projemanag.models.Task
@@ -58,6 +60,20 @@ open class TaskListItemsAdapter(
             } else {
                 holder.itemView.findViewById<TextView>(R.id.tv_add_task_list).visibility = View.GONE
                 holder.itemView.findViewById<LinearLayout>(R.id.ll_task_item).visibility = View.VISIBLE
+            }
+
+            holder.itemView.findViewById<TextView>(R.id.tv_task_list_title).text = model.title
+            holder.itemView.findViewById<TextView>(R.id.tv_add_task_list).setOnClickListener{
+                holder.itemView.findViewById<TextView>(R.id.tv_add_task_list).visibility = View.GONE
+                holder.itemView.findViewById<CardView>(R.id.cv_add_task_list_name).visibility = View.VISIBLE
+            }
+
+            holder.itemView.findViewById<ImageButton>(R.id.ib_close_list_name).setOnClickListener{
+                holder.itemView.findViewById<TextView>(R.id.tv_add_task_list).visibility = View.VISIBLE
+                holder.itemView.findViewById<CardView>(R.id.cv_add_task_list_name).visibility = View.GONE
+            }
+            holder.itemView.findViewById<ImageButton>(R.id.ib_done_list_name).setOnClickListener{
+                //TODO create entry in DB
             }
         }
     }
